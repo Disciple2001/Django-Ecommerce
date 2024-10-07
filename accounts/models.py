@@ -60,7 +60,7 @@ class CustomUser(AbstractBaseUser):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     email = models.EmailField(max_length=124, unique=True)
-    phone_number = models.CharField(max_length=20, unique=True)
+    phone_number = models.CharField(max_length=20, unique=True, blank=True, null=True)
     address = models.CharField(max_length=124, blank=True, null=True)
 
     # required

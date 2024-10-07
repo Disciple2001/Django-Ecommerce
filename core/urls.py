@@ -24,5 +24,12 @@ from core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('store/', include('ecommerce.urls'))
+    path('store/', include('ecommerce.urls')),
+    path('accounts/', include('accounts.urls')),
+
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+    path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate, name='resetpassword_validate'),
+    path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
+    path('resetPassword/', views.resetPassword, name='resetPassword'),
+
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
