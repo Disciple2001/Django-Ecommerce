@@ -6,7 +6,7 @@
         <div class="container">
 
             <!-- ============================ COMPONENT 1 ================================= -->
-            {% if not cart_products %}
+            {% if not cart_items %}
                 <h2 class="text-center">Your shopping cart is empty</h2>
                 <br>
                 <div class="text-center">
@@ -26,15 +26,15 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for cart_product in cart_products %}<tr>
+                            {% for cart_item in cart_items %}<tr>
                                 <td>
                                     <figure class="itemside align-items-center">
-                                        <div class="aside"><img src="{{ cart_product.product.image.url }}" class="img-sm"></div>
+                                        <div class="aside"><img src="{{ cart_item.product.image.url }}" class="img-sm"></div>
                                         <figcaption class="info">
-                                            <a href="{{ cart_product.product.get_url }}" class="title text-dark">{{ cart_product.product.product_name }}</a>
+                                            <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
                                             <p class="text-muted small">
-                                                {% if cart_product.variations.all %}
-                                                    {% for item in cart_product.variations.all %}
+                                                {% if cart_item.variations.all %}
+                                                    {% for item in cart_item.variations.all %}
                                                         {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst}} <br>
                                                     {% endfor %}
                                                 {% endif %}
@@ -47,13 +47,13 @@
                                     <div class="col">
                                         <div class="input-group input-spinner">
                                             <div class="input-group-prepend">
-                                                <a href="{% url 'decrese_quantity_from_cart_product' cart_product.product.id cart_product.id%}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
+                                                <a href="{% url 'decrese_quantity_from_cart_product' cart_item.product.id cart_item.id%}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
                                             </div>
-                                            <input type="text" class="form-control"  value="{{ cart_product.quantity }}">
+                                            <input type="text" class="form-control"  value="{{ cart_item.quantity }}">
                                             <div class="input-group-append">
-                                                <form action="{% url 'add_to_cart' cart_product.product.id %}" method="POST">
+                                                <form action="{% url 'add_to_cart' cart_item.product.id %}" method="POST">
                                                     {% csrf_token %}
-                                                    {% for item in  cart_product.variations.all %}
+                                                    {% for item in  cart_item.variations.all %}
                                                         <input type="hidden" name="{{ item.variation_category | lower}}" value="{{ item.variation_value | capfirst }}">
                                                     {% endfor %}
                                                     <button type="submit" class="btn btn-light" id="button-minus"> <i class="fa fa-plus"></i> </button>
@@ -64,12 +64,12 @@
                                 </td>
                                 <td>
                                     <div class="price-wrap">
-                                        <var class="price">${{ cart_product.sub_total }}</var>
-                                        <small class="text-muted"> ${{ cart_product.product.price }} each </small>
+                                        <var class="price">${{ cart_item.sub_total }}</var>
+                                        <small class="text-muted"> ${{ cart_item.product.price }} each </small>
                                     </div> <!-- price-wrap .// -->
                                 </td>
                                 <td class="text-right">
-                                    <a href="{% url 'remove_product_from_cart' cart_product.product.id cart_product.id%}" onclick="return confirm('Are you sure you want to delete this item')" class="btn btn-danger"> Remove</a>
+                                    <a href="{% url 'remove_cartItem_from_cart' cart_item.product.id cart_item.id%}" onclick="return confirm('Are you sure you want to delete this item')" class="btn btn-danger"> Remove</a>
                                 </td>
                                 </tr>
                             {% endfor %}
@@ -98,7 +98,7 @@
                             <p class="text-center mb-3">
                                 <img src="./images/misc/payments.png" height="26">
                             </p>
-                            <a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
+                            <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
                             <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
                         </div> <!-- card-body.// -->
                     </div> <!-- card.// -->

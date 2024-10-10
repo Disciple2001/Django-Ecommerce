@@ -15,9 +15,15 @@ class ProductDisplay(admin.ModelAdmin):
     search_fields = ('product_name',)
 
 
+class CartItemDisplay(admin.ModelAdmin):
+    list_display = ('cart__cart_id', 'product__product_name', 'quantity', 'created_at')
+    search_fields = ('cart__cart_id',)
+    ordering = ['-id']
+
+
 class CartDisplay(admin.ModelAdmin):
-    list_display = ('user__username', 'product__product_name', 'quantity', 'created_at')
-    search_fields = ('user',)
+    list_display = ('cart_id', 'date_added')
+    search_fields = ('cart_id',)
     ordering = ['-id']
 
 
@@ -31,5 +37,6 @@ class ProductVariationDisplay(admin.ModelAdmin):
 
 admin.site.register(models.Category, CategoryDisplay)
 admin.site.register(models.Product, ProductDisplay)
+admin.site.register(models.CartItem, CartItemDisplay)
 admin.site.register(models.Cart, CartDisplay)
 admin.site.register(models.ProductVariation, ProductVariationDisplay)

@@ -1,4 +1,5 @@
-from ecommerce.models import Category, Cart
+from ecommerce.models import Category, CartItem, Cart
+from ecommerce.views import _get_or_create_session_id
 
 
 def menu_links(request):
@@ -7,14 +8,22 @@ def menu_links(request):
 
 
 def get_cart_products_quantity(request):
+    total_quantity = 0
     if 'admin' in request.path:
         return {}
     else:
-        cart_products = Cart.objects.filter(user__username='dario')
-        total_quantity = 0
+        try:
+            cart = Cart.objects.filter(cart_id=_get_or_create_session_id(request))
 
-        for cart_product in cart_products:
-            total_quantity += cart_product.product.quantity
+            if request.user.is_authenticated:
+                cart_items = CartItem.objects.all().filter(user=request.user)
+            else:
+                cart_items = CartItem.objects.all().filter(cart=cart[:1])
+
+            for cart_item in cart_items:
+                total_quantity += cart_item.quantity
+
+        except Cart.DoesNotExist:
+            total_quantity = 0
 
         return dict(total_quantity=total_quantity)
-

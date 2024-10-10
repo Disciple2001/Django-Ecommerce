@@ -84,19 +84,35 @@ class ProductVariation(models.Model):
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    variations = models.ManyToManyField(ProductVariation, blank=True)
-    quantity = models.IntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
+    # Cart_id is the session id of the browser
+    cart_id = models.CharField(max_length=124, blank=True)
+    date_added = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user.username} - {self.product.product_name}'
+        return self.cart_id
+
+    class Meta:
+        verbose_name = 'cart'
+        verbose_name_plural = 'carts'
+        ordering = ['-id']
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    variations = models.ManyToManyField(ProductVariation, blank=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.cart.cart_id} - {self.product.product_name}'
 
     def sub_total(self):
         return self.product.price * self.quantity
 
     class Meta:
-        verbose_name = 'cart'
-        verbose_name_plural = 'carts'
+        verbose_name = 'cartItem'
+        verbose_name_plural = 'cartItems'
         ordering = ['-id']
